@@ -19,13 +19,13 @@ class PromptRequest(BaseModel):
 	prompt: str
 	max_tokens: int = 256
 
-@app.post("/generator")
+@app.post("/generate")
 def generate_text(request: PromptRequest):
 	inputs = tokenizer(request.prompt, return_tensors="pt").to(model.device)
 	with torch.no_grad():
 		output = model.generate(
 			**inputs,
-			max_lengths=inputs["input_ids"].shape[1] + request.max_tokens,
+			max_length=inputs["input_ids"].shape[1] + request.max_tokens,
 			do_sample=True,
 			top_p=0.95,
 			temperature=0.8,
